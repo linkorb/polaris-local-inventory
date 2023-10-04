@@ -1,0 +1,20 @@
+collections:
+- name: community.docker
+- name: community.sops
+- name: ansible.posix
+- name: devsec.hardening
+
+roles:
+- name: artis3n.tailscale
+  version: "v4.2.2"
+- name: cchurch.admin-users
+  version: "0.8.6"
+- name: geerlingguy.docker
+  version: "6.1.0"
+- name: geerlingguy.mysql
+  version: "4.3.2"
+- name: geerlingguy.pip
+  version: "2.2.0"
+- name: linkorb.shipyard
+- name: ypsman.ipv6_disable
+- name: linux-system-roles.timesync

@@ -1,2 +1,9 @@
+# Hardware layer
 - name: "Create the developer's Inventory as Multipass VMs"
-  import_playbook: make-multipass-inventory.yaml
+  ansible.builtin.import_playbook: make-multipass-inventory.yaml
+- name: "Prepare the Multipass VMs for more Ansible fun"
+  ansible.builtin.import_playbook: prepare-multipass-inventory.yaml
+
+# Polaris Layers
+- name: Hosts are configured with Polaris layers
+  ansible.builtin.import_playbook: linkorb.polaris.layers

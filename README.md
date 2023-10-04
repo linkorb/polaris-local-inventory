@@ -84,10 +84,20 @@ execution of your play.  The site.yaml playbook already does this.
 ## Files in this repo
 
 - `ansible.cfg`: Ansible config for the development environment.
-- `collections/ansible_collections/linkorb/polaris`: The polaris collection as a git submodule.
+
+- `collections/ansible_collections/linkorb/polaris`: The polaris collection as
+  a git submodule.
+
 - `example-site.yaml`: An example playbook.
+
 - `site.yaml`: The main playbook.  You will run `ansible-playbook site.yaml`.
+
 - `make-multipass-inventory.yaml`: A top-level playbook that realises the
   Inventory as Multipass VMs.
+
+- `prepare-multipass-inventory.yaml`: A top-level playbook to prepare the fresh
+  VMs
+
 - `tasks/`: Tasks imported into top-level playbooks.
+
 - `templates/`: Templates used by the top-level playbooks.

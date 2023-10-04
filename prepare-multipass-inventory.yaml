@@ -1,0 +1,7 @@
+- name: Prepare the Multipass VMs
+  hosts: all
+  tasks:
+  - name: Populate Apt's Cache with package definitions
+    become: true
+    ansible.builtin.apt:
+      update_cache: true
