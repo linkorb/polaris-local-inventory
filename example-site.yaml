@@ -1,0 +1,63 @@
+- name: "All Hosts have a standard set of tools and configuration"
+  hosts: all
+  become: true
+  roles:
+  - role: common
+
+# These examples show various ways to assign roles to hosts
+#
+# In this first one, the inventory is one host group "swarm" and ansible decides which
+# of three roles to apply to each host by the value of its vars
+# pros:
+# - fewer host groups
+# cons:
+# - too complicated
+# - many roles
+# - roles are mostly empty
+# - order of execution determined by order of hosts in inventory
+#- hosts: swarm
+#  roles:
+#  - role: primary_swarm_manager
+#    when: swarm_manager is defined and swarm_manager and initializes_swarm is defined and initializes_swarm
+#  - role: swarm_manager
+#    when: swarm_manager is defined and swarm_manager and initializes_swarm is not defined or not initializes_swarm
+#  - role: swarm_node
+#    when: swarm_manager is not defined or not swarm_manager
+#
+# In this second the inventory is separate host groups for managers and workers and
+# ansible applies the same role to all hosts, but each group with different role parameters
+# pros:
+# - expressive
+# - fewer roles
+# - single role handles all node types
+# - order of execution is explicitly the order shown here
+# cons:
+# - more host groups
+- hosts: primary_swarm_managers
+  roles:
+  - { role: docker_swarm, id: "{{ swarm_id }}", manager: true, initialise: true }
+
+- hosts: swarm_managers
+  become: true
+  roles:
+  - { role: docker_swarm, id: "{{ swarm_id }}", manager: true }
+
+- hosts: swarm_nodes
+  become: true
+  roles:
+  - { role: docker_swarm, id: "{{ swarm_id }}", manager: false }
+#
+# In this third the inventory is one host group and ansible applies the same role to all hosts
+# and passes values of each hosts vars as role parameters
+# pros:
+# - fewer host groups
+# - fewer roles
+# - single role handles all node types
+# cons:
+# - order of execution determined by order of hosts in inventory
+#- hosts: swarm
+#  roles:
+#  - role: docker_swarm
+#    manager: swarm_manager is defined and swarm_manager
+#    initialise: initializes_swarm is defined and initializes_swarm
+
