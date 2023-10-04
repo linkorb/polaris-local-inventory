@@ -1,2 +1,8 @@
 - name: "Create the developer's Inventory as Multipass VMs"
   import_playbook: make-multipass-inventory.yaml
+
+- name: "All Hosts have a standard set of tools and configuration"
+  hosts: all
+  become: true
+  roles:
+  - role: linkorb.polaris.common
