@@ -22,6 +22,8 @@ or, as distinct steps:
 git clone --branch develop https://github.com/linkorb/ansible-x-polaris.git
 git submodule update --init --recursive
 ```
+Tip: the `wip-roles` branch is interesting too; beware, its history is rewritten
+     a lot.
 
 The polaris submodule tracks the `wip-roles` branch of
 linkorb/ansible-collection-polaris.  You can configure a different branch:

@@ -6,3 +6,10 @@
   become: true
   roles:
   - role: linkorb.polaris.common
+
+- name: "Hosts belong to Docker Swarms"
+  vars:
+      polaris_primary_swarm_managers: primary_swarm_managers
+      polaris_secondary_swarm_managers: swarm_managers
+      polaris_swarm_nodes: swarm_nodes
+  import_playbook: linkorb.polaris.docker_swarm
