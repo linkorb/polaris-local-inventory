@@ -1,0 +1,63 @@
+# This play is intended to be run on the control node (localhost), for every host
+#
+# A Multipass VM is launched for each host in the inventory.  It is expected that
+# SSH Host Key Checking is disabled (e.g. in ansible.cfg) so that Ansible can
+# connect to the newly launced VMs without human intervention.
+#
+# The way that the play learns the VM IP address is suboptimal because it needs
+# to be repeated in each separate playbook (i.e. playbooks run by themselves).
+# So expect in future to see usage of kidkafka9's inventory plugin instead.
+
+- name: The inventory is realised as Multipass VMs under our control
+  hosts: all
+  gather_facts: false
+  tasks:
+
+  - name: Localhost has an OpenSSH Keypair with which to control hosts
+    run_once: True
+    delegate_to: localhost
+    community.crypto.openssh_keypair:
+      path: id_ansible_rsa
+      size: 2048
+    register: generated_ansible_ssh_key
+
+  # This will fail if the VM doesn't exist.  Failure is fine and is ignored.
+  - name: Test to see if the Host is already a Multipass VM
+    delegate_to: localhost
+    ignore_errors: true
+    ansible.builtin.command:
+      cmd: "multipass info --format json {{ inventory_hostname|quote }}"
+    register: vm_status
+
+  - name: Learn whether or not the Host is a Multipass VM
+    ansible.builtin.set_fact:
+      is_a_multipass_vm: "{{ vm_status.rc == 0 }}"
+      cacheable: yes
+
+  - name: Learn the state of the Multipass VM
+    when: is_a_multipass_vm
+    ansible.builtin.set_fact:
+      vm_state: "{{ vm_status.stdout | from_json | community.general.json_query('info.\"' ~ inventory_hostname ~ '\".state') }}"
+      cacheable: yes
+
+  - name: Start a stopped Multipass VM
+    delegate_to: localhost
+    when: is_a_multipass_vm and vm_state == "Stopped"
+    ansible.builtin.command:
+      cmd: "multipass start {{ inventory_hostname|quote }}"
+
+  # Perform this task one host at a time to avoid some kind of rate-limiting that
+  # shows-up as a multipass error: launch failed: Remote "" is unknown or unreachable
+  - name: Create the Host as a Multipass VM
+    delegate_to: localhost
+    throttle: 1
+    when: not is_a_multipass_vm
+    ansible.builtin.command:
+      cmd: "multipass launch -v --timeout 360 --cloud-init - --name {{ inventory_hostname|quote }}"
+      stdin: "{{ lookup('ansible.builtin.template', 'cloud-init.yaml.j2') }}"
+    vars:
+      ssh_pubkey: "{{ generated_ansible_ssh_key.public_key }}"
+      ip_address_and_mask: "{{ ansible_host }}/24"
+
+  - name: Update the Inventory with facts about the Multipass VMs
+    ansible.builtin.include_tasks: tasks/update-multipass-inventory.yaml

@@ -1,0 +1,2 @@
+- name: "Create the developer's Inventory as Multipass VMs"
+  import_playbook: make-multipass-inventory.yaml
