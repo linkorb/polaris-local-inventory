@@ -1,0 +1,27 @@
+# These tasks can be imported into a play whenever it applies to Multipass VMs
+# see make-multipass-inventory.yaml for example
+
+# This task is retried a few times to give VMs time to fully start
+- name: Gather facts about the Multipass VM
+  delegate_to: localhost
+  retries: 3
+  delay: 3
+  until: multipass_host_info.rc == 0
+  ansible.builtin.command:
+    cmd: "multipass info --format json {{ inventory_hostname|quote }}"
+  register: multipass_host_info
+
+- name: Learn the Multipass VM IPv4 Address
+  ansible.builtin.set_fact:
+    ipv4_address: "{{ multipass_host_info.stdout | from_json | community.general.json_query('info.\"' ~ inventory_hostname ~ '\".ipv4[0]') }}"
+    cacheable: yes
+
+# This task is a bit weird.  The module runs only once with the host vars of
+# the first ansible_play_hosts.  This requires us to make the module loop over
+# ansible_play_hosts and retrieve the facts of each host from global hostvars.
+# Note: this task is updating hosts in the inventory, it isn't adding hosts.
+- name: Record, in the Inventory, the IPv4 Address of all Hosts
+  ansible.builtin.add_host:
+    hostname: '{{ item }}'
+    ansible_host: '{{ hostvars[item].ansible_facts.ipv4_address }}'
+  loop: "{{ ansible_play_hosts }}"
