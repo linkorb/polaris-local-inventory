@@ -3,7 +3,8 @@
 Local, development version of your Infrastructure.
 
 The playbook in this repo is intended to be used with Ubuntu Multipass to spin
-up whatever Inventory the developer needs.
+up whatever Inventory the developer needs while they work on
+ansible-collection-polaris.
 
 
 ## Usage
@@ -12,9 +13,20 @@ In brief: clone this repo, add your inventory and run the "site" playbook.
 
 ### Clone this repo
 
-Clone the repo:
+Clone the repo and submodules in one go:
+```
+git clone --branch develop --recurse-submodules https://github.com/linkorb/polaris-local-inventory.git
+```
+or, as distinct steps:
 ```
 git clone --branch develop https://github.com/linkorb/polaris-local-inventory.git
+git submodule update --init --recursive
+```
+
+The polaris submodule tracks the `develop` branch of
+linkorb/ansible-collection-polaris.  You can configure a different branch:
+```
+git config -f .gitmodules submodule.polaris.branch some-other-branch
 ```
 
 ### Add your Inventory
@@ -72,6 +84,7 @@ execution of your play.  The site.yaml playbook already does this.
 ## Files in this repo
 
 - `ansible.cfg`: Ansible config for the development environment.
+- `collections/ansible_collections/linkorb/polaris`: The polaris collection as a git submodule.
 - `example-site.yaml`: An example playbook.
 - `site.yaml`: The main playbook.  You will run `ansible-playbook site.yaml`.
 - `make-multipass-inventory.yaml`: A top-level playbook that realises the
