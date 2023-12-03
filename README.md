@@ -9,7 +9,7 @@ ansible-collection-polaris.
 
 ## Usage
 
-In brief: clone this repo, add your inventory and run the "site" playbook.
+In brief: clone this repo, install dependencies, add your inventory and run the "site" playbook.
 
 ### Clone this repo
 
@@ -27,6 +27,15 @@ The polaris submodule tracks the `develop` branch of
 linkorb/ansible-collection-polaris.  You can configure a different branch:
 ```
 git config -f .gitmodules submodule.polaris.branch some-other-branch
+```
+
+### Install dependencies
+
+```shell
+ansible-galaxy install -r requirements.yaml
+
+# required for schema validation in polaris collection
+pip3 install jsonschema
 ```
 
 ### Add your Inventory
