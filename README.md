@@ -37,17 +37,22 @@ more than the names or aliases of the hosts, organised into whatever groups you
 need.  The playbook will begin by spinning-up the hosts and establishing
 connections to them.
 
-For example, you might stipulate a very simple inventory like so:
+For example, you might stipulate a very simple inventory like (`my-development-inventory.yaml`):
 
-```
-; my-development-inventory
-[superduper_megalicious_workers]
-super-worker-1
-super-worker-2
-
-[storage_nodes]
-store-1
-store-2
+```yaml
+all:
+  children:
+    polaris_hosts:
+      hosts:
+        super-worker-1:
+          #polaris: {} # variables can also be configured per host
+        super-worker-2:
+        store-1:
+        store-2:
+      vars:
+        polaris:
+          admins_active: []
+          admins_removed: []
 ```
 
 For each of the hosts in such an inventory, Ansible will:
@@ -61,7 +66,7 @@ play and templates/cloud-init.yaml.j2
 
 ### Run the playbook
 
-Run `ansible-playbook -i my-development-inventory site.yaml`.
+Run `ansible-playbook -i my-development-inventory.yaml site.yaml`.
 
 Your inventory will be realised as multipass VMs during the first steps of the
 "site" playbook.  The IP addresses of the VMs will be collected when the VMs are
