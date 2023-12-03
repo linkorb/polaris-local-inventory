@@ -1,3 +1,5 @@
 /.vscode
 /id_ansible_rsa
 /id_ansible_rsa.pub
+collections/
+roles/
