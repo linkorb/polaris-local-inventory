@@ -1,18 +1,18 @@
-polaris_admins_active:
-- username: alice
-  fullname: The Admin
-  pubkey: "ssh-rsa pubkey"
-- username: bob
-  fullname: The Other Admin
-  pubkey: "ssh-rsa pubkey"
+polaris:
+  admins_active:
+  - username: alice
+    fullname: The Admin
+    pubkey: "ssh-rsa pubkey"
+  - username: bob
+    fullname: The Other Admin
+    pubkey: "ssh-rsa pubkey"
 
-polaris_admins_removed:
-- mallory
+  admins_removed:
+  - mallory
 
-polaris_docker_users:
-- alice
-- bob
+  docker_users:
+  - alice
+  - bob
 
-polaris_docker_registry_login_registry: https://ghcr.io/
-polaris_docker_registry_login_username: nobody
-polaris_docker_registry_login_pat: ghp_classicpersonalaccesstoken
+  docker_registry_username: nobody
+  docker_registry_pat: ghp_classicpersonalaccesstoken
