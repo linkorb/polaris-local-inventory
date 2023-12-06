@@ -3,6 +3,7 @@ collections:
 - name: community.sops
 - name: ansible.posix
 - name: devsec.hardening
+- name: prometheus.prometheus
 
 roles:
 - name: artis3n.tailscale
