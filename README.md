@@ -9,7 +9,13 @@ ansible-collection-polaris.
 
 ## Usage
 
-In brief: clone this repo, install dependencies, add your inventory and run the "site" playbook.
+In brief:
+
+ - clone this repo
+ - install dependencies
+ - add/create your inventory
+ - define polaris collection variables
+ - run the "site.yaml" playbook.
 
 ### Clone this repo
 
@@ -54,28 +60,9 @@ all:
     polaris_hosts:
       hosts:
         super-worker-1:
-          #polaris: {} # variables can also be configured per host
         super-worker-2:
         store-1:
         store-2:
-      vars:
-        polaris:
-          admins_active: []
-          admins_removed: []
-          docker_users: []
-          docker_registry_username: ubuntu
-          # To store an encrypted value use
-          #
-          #   ansible-vault encrypt_string "YOUR_GITHUB_CLASSIC_TOKEN" --name docker_registry_pat
-          #
-          # Run the playbook with the --ask-vault-pass (or -J) to decrypt secret during execution
-          docker_registry_pat: !vault |
-            $ANSIBLE_VAULT;1.1;AES256
-            39306563313932666361333332656538653138626534613731316530353733313134393137333335
-            3362376536623234373033343933656131333763383933310a353037353332393839383330396438
-            37303833313237323430613561326438306561363934363465363635336332643432353765623336
-            6363366566613566650a396365303264303233343364313033663461343335363866346161303338
-            35613931623637633833343332346463656335363631343237656634373637333434
 ```
 
 For each of the hosts in such an inventory, Ansible will:
@@ -86,6 +73,58 @@ For each of the hosts in such an inventory, Ansible will:
 
 You can see how this is achieved by reviewing the make-multipass-inventory.yaml
 play and templates/cloud-init.yaml.j2
+
+
+### Define your group variables and secrets
+
+For up to date reference of the variables required by the LinkORB Polaris collection review the
+[README.md](https://github.com/linkorb/ansible-collection-polaris#readme) or
+consult the [variables schema
+definition](https://github.com/linkorb/ansible-collection-polaris/blob/main/variables.schema.yaml).
+
+
+Certain mandatory variables contain secrets, and you'll want to encrypt those. For that you will need to have
+[SOPS: Secrets OPeration](https://github.com/getsops/sops) installed.
+
+Next you will need an encryption key. For development purpose you can generate a local PGP key using GPG ([per
+the Ansible manual](https://docs.ansible.com/ansible/latest/collections/community/sops/docsite/guide.html#setting-up-sops)).
+
+```shell
+$ gpg --quick-generate-key your_email@example.com
+... # most output omitted
+pub   ...
+      60458B91B38A65D7523AD43D9BCF76AF1BAD0BEE
+uid                         your_email@example.com
+sub   ...
+```
+
+At the root of the repository create a `.sops.yaml` file, that contains the previous public key fingerprint
+within the following YAML structure:
+
+```yaml
+creation_rules:
+  - pgp: '60458B91B38A65D7523AD43D9BCF76AF1BAD0BEE'
+```
+
+Once all the above is done you can edit encrypted group_vars files via SOPS.
+
+```shell
+$ sops group_vars/polaris_hosts.sops.yaml
+```
+
+```yaml
+# Quickstart polaris variables definition. Review ansible-collection-polaris for an up to date list
+polaris:
+    admins_active: []
+    admins_removed: []
+    docker_users: []
+    docker_registry_username: your_github_username
+    docker_registry_pat: ghc_classic_personal_token_for_container_registry_access
+```
+
+> This file will be loaded and decrypted transparently via SOPS thanks to specific ansible.cfg configuration.
+
+
 
 ### Run the playbook
 
