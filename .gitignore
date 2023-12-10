@@ -3,3 +3,4 @@
 /id_ansible_rsa.pub
 collections/
 roles/
+.sops.yaml
