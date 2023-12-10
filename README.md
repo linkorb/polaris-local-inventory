@@ -62,6 +62,20 @@ all:
         polaris:
           admins_active: []
           admins_removed: []
+          docker_users: []
+          docker_registry_username: ubuntu
+          # To store an encrypted value use
+          #
+          #   ansible-vault encrypt_string "YOUR_GITHUB_CLASSIC_TOKEN" --name docker_registry_pat
+          #
+          # Run the playbook with the --ask-vault-pass (or -J) to decrypt secret during execution
+          docker_registry_pat: !vault |
+            $ANSIBLE_VAULT;1.1;AES256
+            39306563313932666361333332656538653138626534613731316530353733313134393137333335
+            3362376536623234373033343933656131333763383933310a353037353332393839383330396438
+            37303833313237323430613561326438306561363934363465363635336332643432353765623336
+            6363366566613566650a396365303264303233343364313033663461343335363866346161303338
+            35613931623637633833343332346463656335363631343237656634373637333434
 ```
 
 For each of the hosts in such an inventory, Ansible will:
