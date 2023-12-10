@@ -53,11 +53,12 @@
     throttle: 1
     when: not is_a_multipass_vm
     ansible.builtin.command:
-      cmd: "multipass launch -v --timeout 360 --cloud-init - --name {{ inventory_hostname|quote }}"
+      cmd: "multipass launch -v --timeout 360 --cloud-init - --name {{ inventory_hostname|quote }} -d 7G"
       stdin: "{{ lookup('ansible.builtin.template', 'cloud-init.yaml.j2') }}"
     vars:
       ssh_pubkey: "{{ generated_ansible_ssh_key.public_key }}"
       ip_address_and_mask: "{{ ansible_host }}/24"
+    register: vm_created
 
   - name: Update the Inventory with facts about the Multipass VMs
     ansible.builtin.include_tasks: tasks/update-multipass-inventory.yaml

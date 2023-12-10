@@ -1,0 +1,7 @@
+command:
+  - "--configFile=/etc/traefik/config.yaml"
+
+volumes:
+  - /var/run/docker.sock:/var/run/docker.sock
+  - /etc/traefik:/etc/traefik
+  - /var/log/traefik:/var/log/traefik

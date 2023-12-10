@@ -1,4 +1,8 @@
 stacks:
+- name: lb
+  chart: traefik
+  host: the-swarm-manager
+  tag: lb
 
 # Our own apps
 #
@@ -9,3 +13,7 @@ stacks:
   tag: app
 
 # 3rd party apps we host
+- name: whoami
+  chart: whoami
+  host: the-swarm-manager
+  tag: app
