@@ -120,6 +120,7 @@ polaris:
     docker_users: []
     docker_registry_username: your_github_username
     docker_registry_pat: ghc_classic_personal_token_for_container_registry_access
+    tailscale_authkey: tskey_auth_token
 ```
 
 > This file will be loaded and decrypted transparently via SOPS thanks to specific ansible.cfg configuration.
