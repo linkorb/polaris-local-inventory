@@ -5,3 +5,4 @@
     become: true
     ansible.builtin.apt:
       update_cache: true
+    when: vm_created is defined and vm_created.changed
