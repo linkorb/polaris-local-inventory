@@ -4,3 +4,5 @@
 collections/
 roles/
 .sops.yaml
+cert.pem
+key.pem

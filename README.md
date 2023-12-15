@@ -126,10 +126,30 @@ polaris:
     docker_registry_username: your_github_username
     docker_registry_pat: ghc_classic_personal_token_for_container_registry_access
     tailscale_authkey: tskey_auth_token
+    traefik_tls_files:
+      - certFile: {{ inventory_dir }}/cert.pem
+        keyFile: {{ inventory_dir }}/key.pem
+        domain: whoami.local
 ```
 
 > This file will be loaded and decrypted transparently via SOPS thanks to specific ansible.cfg configuration.
 
+To generate a testing self-signed certificate for the `whoami.local` domain you can use:
+
+```shell
+$ openssl req -x509 -newkey rsa:4096 \
+  -keyout key.pem \
+  -out cert.pem \
+  -sha256 -days 3650 -nodes \
+  -subj "/C=XX/ST=StateName/L=CityName/O=CompanyName/OU=CompanySectionName/CN=whoami.local"
+```
+
+To encrypt both files in place via SOPS, use:
+
+```shell
+$ sops --encrypt --in-place cert.pem
+$ sops --encrypt --in-place key.pem
+```
 
 
 ### Run the playbook
