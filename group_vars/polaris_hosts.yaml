@@ -16,3 +16,5 @@ polaris:
 
   docker_registry_username: nobody
   docker_registry_pat: ghp_classicpersonalaccesstoken
+
+  tailscale_authkey: somethingsomething
