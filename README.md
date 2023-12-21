@@ -24,10 +24,15 @@ git submodule update --init --recursive
 ```
 
 The polaris submodule tracks the `develop` branch of
-linkorb/ansible-collection-polaris.  You can configure a different branch:
+linkorb/ansible-collection-polaris and is mounted in the
+`collections/ansible_collections/linkorb/polaris/` folder.  You can configure a
+different branch:
 ```
 git config -f .gitmodules submodule.polaris.branch some-other-branch
 ```
+
+The shipyard.charts submodule tracks the `main` branch of
+linkorb/shipyard-charts and is mounted in the `shipyard/charts/` folder.
 
 ### Install dependencies
 
@@ -111,6 +116,12 @@ execution of your play.  The site.yaml playbook already does this.
 
 - `prepare-multipass-inventory.yaml`: A top-level playbook to prepare the fresh
   VMs
+
+- `shipyard/charts/`: The linkorb/shipyard-charts repo as a submodule.
+
+- `shipyard/shipyard.yaml`: The helmfile-like manifest of shipyard stacks.
+
+- `shipyard/stacks/`: Instances of shipyard charts, as per the shipyard.yaml manifest.
 
 - `tasks/`: Tasks imported into top-level playbooks.
 
