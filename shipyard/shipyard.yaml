@@ -1,5 +1,11 @@
 stacks:
 
 # Our own apps
+#
+# Proxi - because it's easy
+- name: proxi
+  chart: proxi
+  host: the-swarm-manager
+  tag: app
 
 # 3rd party apps we host
