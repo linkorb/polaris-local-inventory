@@ -21,11 +21,11 @@ In brief:
 
 Clone the repo and submodules in one go:
 ```
-git clone --branch develop --recurse-submodules https://github.com/linkorb/polaris-local-inventory.git
+git clone --recurse-submodules https://github.com/linkorb/polaris-local-inventory.git
 ```
 or, as distinct steps:
 ```
-git clone --branch develop https://github.com/linkorb/polaris-local-inventory.git
+git clone https://github.com/linkorb/polaris-local-inventory.git
 git submodule update --init --recursive
 ```
 
