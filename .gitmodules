@@ -1,7 +1,7 @@
 [submodule "polaris"]
 	path = collections/ansible_collections/linkorb/polaris
 	url = https://github.com/linkorb/ansible-collection-polaris.git
-	branch = develop
+	branch = main
 [submodule "shipyard.charts"]
 	path = shipyard/charts
 	url = git@github.com:linkorb/shipyard-charts.git

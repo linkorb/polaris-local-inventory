@@ -29,7 +29,7 @@ git clone https://github.com/linkorb/polaris-local-inventory.git
 git submodule update --init --recursive
 ```
 
-The polaris submodule tracks the `develop` branch of
+The polaris submodule tracks the `main` branch of
 linkorb/ansible-collection-polaris and is mounted in the
 `collections/ansible_collections/linkorb/polaris/` folder.  You can configure a
 different branch:
