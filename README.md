@@ -130,6 +130,8 @@ polaris:
       - certFile: {{ inventory_dir }}/cert.pem
         keyFile: {{ inventory_dir }}/key.pem
         domain: whoami.local
+    # assuming your inventory file is located in the root of the repository
+    shipyard_charts_path: "{{ inventory_dir }}/shipyard/charts"
 ```
 
 > This file will be loaded and decrypted transparently via SOPS thanks to specific ansible.cfg configuration.
