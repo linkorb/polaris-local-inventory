@@ -3,3 +3,6 @@
 /id_ansible_rsa.pub
 collections/
 roles/
+.sops.yaml
+cert.pem
+key.pem

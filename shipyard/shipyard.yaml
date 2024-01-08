@@ -9,3 +9,8 @@ stacks:
   tag: app
 
 # 3rd party apps we host
+- name: whoami
+  chart: whoami
+  host: worker-1
+  values: whoami/values.yaml
+  tag: app
