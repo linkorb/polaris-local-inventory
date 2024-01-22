@@ -1,2 +1,4 @@
 image:
   tag: '1.2.0'
+
+hostname: proxi.local
