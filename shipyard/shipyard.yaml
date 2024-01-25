@@ -4,6 +4,16 @@ stacks:
   host: the-swarm-manager
   tag: lb
 
+- name: loki
+  chart: loki
+  host: the-swarm-manager
+  tag: logging
+
+- name: promtail
+  chart: promtail
+  host: the-swarm-manager
+  tag: logging
+
 # Our own apps
 #
 # Proxi - because it's easy
