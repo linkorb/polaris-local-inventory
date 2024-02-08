@@ -1,0 +1,23 @@
+polaris_hosts:
+  hosts:
+    monitor:
+    swarm-manager:
+    worker-1:
+    worker-2:
+    worker-3:
+
+polaris_traefik_ingress_host:
+  hosts:
+    swarm-manager:
+
+polaris_primary_swarm_managers:
+  hosts:
+    swarm-manager:
+
+polaris_swarm_nodes:
+  vars:
+    join_swarm_initialised_by: swarm-manager
+  hosts:
+    worker-1:
+    worker-2:
+    worker-3:

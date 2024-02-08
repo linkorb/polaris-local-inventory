@@ -1,10 +1,18 @@
 # polaris-local-inventory
 
-Local, development version of your Infrastructure.
+Local, development version of Polaris Infrastructure-as-Code.
 
 The playbook in this repo is intended to be used with Ubuntu Multipass to spin
-up whatever Inventory the developer needs while they work on
-ansible-collection-polaris.
+up a pre-defined Inventory.  For each of the hosts in such an inventory, Ansible
+will:
+
+- create a Multipass VM with the name given in the inventory
+- add to the VM a user account named "ansible" with SSH access Public Key
+- learn the VM IP address and store it in the in-memory inventory so that
+  Ansible can run tasks on it
+
+You can see how this is achieved by reviewing the make-multipass-inventory.yaml
+play and templates/cloud-init.yaml.j2
 
 
 ## Usage
@@ -13,7 +21,6 @@ In brief:
 
  - clone this repo
  - install dependencies
- - add/create your inventory
  - define polaris collection variables
  - run the "site.yaml" playbook.
 
@@ -48,37 +55,6 @@ ansible-galaxy install -r requirements.yaml
 # required for schema validation in polaris collection
 pip3 install jsonschema
 ```
-
-### Add your Inventory
-
-This repo provides a way to spin-up virtual machines (VMs) for use in development
-and testing.  To do this, you create a minimal inventory file containing not much
-more than the names or aliases of the hosts, organised into whatever groups you
-need.  The playbook will begin by spinning-up the hosts and establishing
-connections to them.
-
-For example, you might stipulate a very simple inventory like (`my-development-inventory.yaml`):
-
-```yaml
-all:
-  children:
-    polaris_hosts:
-      hosts:
-        super-worker-1:
-        super-worker-2:
-        store-1:
-        store-2:
-```
-
-For each of the hosts in such an inventory, Ansible will:
-
-- create a Multipass VM with the name given in the inventory
-- add a user account named "ansible" with SSH access Public Key
-- learn the VM IP address and store it in the in-memory inventory
-
-You can see how this is achieved by reviewing the make-multipass-inventory.yaml
-play and templates/cloud-init.yaml.j2
-
 
 ### Define your group variables and secrets
 
@@ -154,7 +130,7 @@ $ sops --encrypt --in-place key.pem
 
 ### Run the playbook
 
-Run `ansible-playbook -i my-development-inventory.yaml site.yaml`.
+Run `ansible-playbook -i inventory.yaml site.yaml`.
 
 Your inventory will be realised as multipass VMs during the first steps of the
 "site" playbook.  The IP addresses of the VMs will be collected when the VMs are
@@ -177,6 +153,8 @@ execution of your play.  The site.yaml playbook already does this.
 ## Files in this repo
 
 - `ansible.cfg`: Ansible config for the development environment.
+
+- `inventory.yaml`: The Inventory of hosts managed by Ansible.
 
 - `collections/ansible_collections/linkorb/polaris`: The polaris collection as
   a git submodule.

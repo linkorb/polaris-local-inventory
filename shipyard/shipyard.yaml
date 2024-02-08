@@ -1,17 +1,17 @@
 stacks:
 - name: lb
   chart: traefik
-  host: the-swarm-manager
+  host: swarm-manager
   tag: lb
 
 - name: loki
   chart: loki
-  host: the-swarm-manager
+  host: swarm-manager
   tag: logging
 
 - name: promtail
   chart: promtail
-  host: the-swarm-manager
+  host: swarm-manager
   tag: logging
 
 # Our own apps
@@ -19,11 +19,11 @@ stacks:
 # Proxi - because it's easy
 - name: proxi
   chart: proxi
-  host: the-swarm-manager
+  host: swarm-manager
   tag: app
 
 # 3rd party apps we host
 - name: whoami
   chart: whoami
-  host: the-swarm-manager
+  host: swarm-manager
   tag: app
