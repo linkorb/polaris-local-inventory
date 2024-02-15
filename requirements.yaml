@@ -7,7 +7,11 @@ collections:
 
 roles:
 - name: artis3n.tailscale
-  version: "v4.4.2"
+  #version: "v4.4.2"
+  # XXX: switch back to a newer version than 4.4.2 when (and if) the following fix
+  # is included: https://github.com/artis3n/ansible-role-tailscale/pull/431
+  src: https://github.com/linkorb/ansible-role-tailscale
+  version: workaround-ansible-inconsistent-vars-handling-in-set-fact-block
 - name: cchurch.admin-users
   version: "0.8.6"
 - name: geerlingguy.docker
