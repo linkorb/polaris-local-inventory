@@ -7,14 +7,20 @@ collections:
 
 roles:
 - name: artis3n.tailscale
-  version: "v4.2.2"
+  #version: "v4.4.2"
+  # XXX: switch back to a newer version than 4.4.2 when (and if) the following fix
+  # is included: https://github.com/artis3n/ansible-role-tailscale/pull/431
+  src: https://github.com/linkorb/ansible-role-tailscale
+  version: workaround-ansible-inconsistent-vars-handling-in-set-fact-block
 - name: cchurch.admin-users
   version: "0.8.6"
 - name: geerlingguy.docker
+  # Upgrade to 7.1.0 breaks when installing docker
   version: "6.1.0"
 - name: geerlingguy.mysql
-  version: "4.3.2"
+  version: "4.3.4"
 - name: geerlingguy.pip
+  # Upgrade to 3.0.2 breaks when install pip
   version: "2.2.0"
 - name: linkorb.shipyard
 - name: ypsman.ipv6_disable
