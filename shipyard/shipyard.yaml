@@ -1,4 +1,12 @@
 stacks:
+
+# Database and Replica
+#
+- name: database-alpha
+  chart: mariadb-replicated
+  host: swarm-manager
+  tag: app
+
 - name: lb
   chart: traefik
   host: swarm-manager
