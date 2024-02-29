@@ -6,6 +6,8 @@ volumes:
   - /etc/traefik:/etc/traefik
   - /var/log/traefik:/var/log/traefik
 
+hostname: traefik.local
+
 deploy:
   placement:
     constraints:
@@ -25,3 +27,9 @@ ports:
   published: 18080
   protocol: tcp
   mode: host
+
+# Dollar signs in the password must be doubled, use the following sed call
+# echo $(htpasswd -nb user password) | sed -e s/\\$/\\$\\$/g
+users:
+  # "user" "password"
+  - "user:$$apr1$$Rq.c/siQ$$uN8tavHTlrpaU7dqL9ySR1"
