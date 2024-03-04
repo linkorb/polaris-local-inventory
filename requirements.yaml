@@ -4,6 +4,9 @@ collections:
 - name: ansible.posix
 - name: devsec.hardening
 - name: prometheus.prometheus
+- name: https://github.com/linkorb/ansible-collection-polaris.git
+  type: git
+  version: main
 
 roles:
 - name: artis3n.tailscale
