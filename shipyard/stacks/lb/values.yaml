@@ -21,3 +21,7 @@ ports:
   published: 443
   protocol: tcp
   mode: host
+- target: 18080 # Traefik entrypoint: headscale
+  published: 18080
+  protocol: tcp
+  mode: host
