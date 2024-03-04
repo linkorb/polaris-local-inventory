@@ -62,3 +62,6 @@
 
   - name: Update the Inventory with facts about the Multipass VMs
     ansible.builtin.include_tasks: tasks/update-multipass-inventory.yaml
+
+  - name: Allow the VMs to resolve each other's names
+    ansible.builtin.include_tasks: tasks/network-multipass-inventory.yaml

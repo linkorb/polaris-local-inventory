@@ -1,0 +1,12 @@
+# These tasks can be imported into a play whenever it applies to Multipass VMs
+# see make-multipass-inventory.yaml for example
+
+- name: Add to /etc/hosts an entry mapping every Host name to its IP address
+  become: true
+  ansible.builtin.lineinfile:
+    dest: /etc/hosts
+    regexp: '.*{{ item }}$'
+    line: '{{ hostvars[item].ansible_host }} {{item}}'
+    state: present
+  when: hostvars[item].ansible_host is defined
+  with_items: '{{ ansible_play_hosts }}'
