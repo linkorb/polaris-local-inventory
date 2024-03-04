@@ -5,3 +5,19 @@ volumes:
   - /var/run/docker.sock:/var/run/docker.sock
   - /etc/traefik:/etc/traefik
   - /var/log/traefik:/var/log/traefik
+
+deploy:
+  placement:
+    constraints:
+    - node.role==manager
+    - node.hostname==swarm-manager
+
+ports:
+- target: 80 # Traefik entrypoint: web
+  published: 80
+  protocol: tcp
+  mode: host
+- target: 443 # Traefik entrypoint: websecure
+  published: 443
+  protocol: tcp
+  mode: host
