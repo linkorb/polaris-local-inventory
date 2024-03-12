@@ -101,7 +101,6 @@ polaris:
     docker_users: []
     docker_registry_username: your_github_username
     docker_registry_pat: ghc_classic_personal_token_for_container_registry_access
-    tailscale_authkey: tskey_auth_token
     traefik_tls_files:
       - certFile: {{ inventory_dir }}/cert.pem
         keyFile: {{ inventory_dir }}/key.pem
