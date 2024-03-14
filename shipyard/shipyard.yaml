@@ -27,6 +27,11 @@ stacks:
   host: swarm-manager
   tag: logging
 
+- name: prometheus
+  chart: prometheus
+  host: swarm-manager
+  tag: monitoring
+
 # Our own apps
 #
 # Proxi - because it's easy
