@@ -32,6 +32,11 @@ stacks:
   host: swarm-manager
   tag: monitoring
 
+- name: alertmanager
+  chart: alertmanager
+  host: swarm-manager
+  tag: monitoring
+
 # Our own apps
 #
 # Proxi - because it's easy
