@@ -1,2 +1,3 @@
 hostname: loki.local
-report_stats_to_grafana_labs: false
+
+reportStatsToGrafanaLabs: false

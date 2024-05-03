@@ -1,3 +1,6 @@
+image:
+  tag: '2.11'
+
 command:
   - "--configFile=/etc/traefik/config.yaml"
 
