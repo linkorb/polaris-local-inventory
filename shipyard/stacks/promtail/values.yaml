@@ -1,1 +1,3 @@
 hostname: promtail.local
+
+loki_url: http://loki.local:3100/loki/api/v1/push
