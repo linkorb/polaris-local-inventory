@@ -53,7 +53,7 @@
     throttle: 1
     when: not is_a_multipass_vm
     ansible.builtin.command:
-      cmd: "multipass launch -v --timeout 360 --cloud-init - --name {{ inventory_hostname|quote }} -d 7G"
+      cmd: "multipass launch -v --timeout 360 --cloud-init - --name {{ inventory_hostname|quote }} -d 7G jammy"
       stdin: "{{ lookup('ansible.builtin.template', 'cloud-init.yaml.j2') }}"
     vars:
       ssh_pubkey: "{{ generated_ansible_ssh_key.public_key }}"
