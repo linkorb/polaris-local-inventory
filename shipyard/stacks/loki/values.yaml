@@ -1,3 +1,6 @@
 hostname: loki.local
 
 reportStatsToGrafanaLabs: false
+users:
+  # "user" "password"
+  - "user:$$apr1$$Rq.c/siQ$$uN8tavHTlrpaU7dqL9ySR1"

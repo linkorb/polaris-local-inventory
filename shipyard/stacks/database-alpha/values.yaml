@@ -11,6 +11,9 @@ primed_volumes:
     - name: database-alpha-init
       path: docker-entrypoint-initdb.d
       target: /docker-entrypoint-initdb.d
+superusers:
+- name: dbdb
+  password: d33b33d00b33d00
 databases:
     - name: picom
       users:
