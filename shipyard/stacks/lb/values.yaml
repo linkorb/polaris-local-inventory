@@ -26,10 +26,6 @@ ports:
   published: 443
   protocol: tcp
   mode: host
-- target: 18080 # Traefik entrypoint: headscale
-  published: 18080
-  protocol: tcp
-  mode: host
 
 # Dollar signs in the password must be doubled, use the following sed call
 # echo $(htpasswd -nb user password) | sed -e s/\\$/\\$\\$/g
