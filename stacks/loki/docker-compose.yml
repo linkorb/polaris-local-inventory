@@ -1,0 +1,48 @@
+services:
+  loki:
+    image: 'grafana/loki:latest'
+    command:
+      - "-config.file=/etc/loki/config.yaml"
+    deploy:
+      mode: global
+      placement:
+        constraints: []
+
+      labels:
+        - "orchestrator=polaris-stackmanager"
+        - "traefik.enable=true"
+        - "traefik.http.routers.loki.rule=Host(`loki.local`)"
+        - "traefik.http.routers.loki.service=loki"
+        - "traefik.http.routers.loki.entrypoints=websecure"
+        - "traefik.http.routers.loki.tls.domains.main=loki.local"
+        - "traefik.http.routers.loki.middlewares=loki-api-users"
+        - "traefik.http.services.loki.loadbalancer.server.port=3100"
+        - "traefik.http.middlewares.loki-api-users.basicauth.users={{ loki_ApiBasicAuthUsers }}"
+        - "traefik.http.middlewares.loki-api-users.basicauth.realm=Loki"
+        - "traefik.http.middlewares.loki-api-users.basicauth.removeheader=true"
+    configs:
+      - source: config
+        target: /etc/loki/config.yaml
+        mode: 0440
+        gid: '10001'
+        uid: '10001'
+    networks:
+      traefik:
+        aliases:
+        - loki.local
+    volumes:
+      - type: volume
+        source: storage
+        target: /loki
+
+configs:
+  config:
+    file: config.yaml
+    name: loki_config_20241213000034
+
+networks:
+  traefik:
+    external: true
+
+volumes:
+  storage:

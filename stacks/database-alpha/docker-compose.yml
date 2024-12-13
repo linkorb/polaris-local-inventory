@@ -1,0 +1,127 @@
+services:
+
+  primary:
+    image: 'mariadb:11.4.4'
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    command: '--log-bin --log-basename=database-alpha-primary'
+    environment:
+    - MARIADB_ROOT_PASSWORD={{ databaseAlpha_MariadbPrimaryRootPassword}}
+    - MARIADB_REPLICATION_USER=rplctr
+    - MARIADB_REPLICATION_PASSWORD={{ databaseAlpha_MariadbReplicationPassword }}
+    - MARIADB_AUTO_UPGRADE=1
+    - LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.2
+    volumes:
+      - 'primary:/var/lib/mysql'
+      - type: volume
+        source: 'database-alpha-init'
+        target: '/docker-entrypoint-initdb.d'
+    deploy:
+      replicas: 1
+      labels:
+      - 'orchestrator=polaris-stackmanager'
+      - 'traefik.docker.network=traefik'
+      placement:
+        constraints: [node.hostname==swarm-manager]
+    ports:
+    - '33301:3306'
+    configs:
+      - source: primaryTuning
+        target: /etc/mysql/conf.d/tuning.cnf
+        mode: 0440
+        gid: '999'
+        uid: '999'
+    networks:
+      storage:
+        aliases:
+        - database-alpha
+        - database-alpha-primary
+      traefik:
+
+  replica:
+    image: 'mariadb:11.4.4'
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--replication_io", "--replication_sql", "--replication"]
+      start_period: 600s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    command: '--server-id=2 --log-basename=database-alpha-replica'
+    environment:
+    - MARIADB_ROOT_PASSWORD={{ databaseAlpha_MariadbReplicaRootPassword }}
+    - MARIADB_MASTER_HOST=database-alpha-primary
+    - MARIADB_REPLICATION_USER=rplctr
+    - MARIADB_REPLICATION_PASSWORD={{ databaseAlpha_MariadbReplicationPassword }}
+    - MARIADB_HEALTHCHECK_GRANTS=REPLICA MONITOR
+    - MARIADB_AUTO_UPGRADE=1
+    - LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.2
+    volumes:
+      - 'replica:/var/lib/mysql'
+    deploy:
+      replicas: 1
+      labels:
+      - 'orchestrator=polaris-stackmanager'
+      - 'traefik.docker.network=traefik'
+    ports:
+    - '33302:3306'
+    configs:
+      - source: replicaTuning
+        target: /etc/mysql/conf.d/tuning.cnf
+        mode: 0440
+        gid: '999'
+        uid: '999'
+    networks:
+      storage:
+        aliases:
+        - database-alpha-replica
+      traefik:
+
+  exporter:
+    image: prom/mysqld-exporter
+    command: --mysqld.address primary:3306
+    configs:
+      - source: exporter
+        target: .my.cnf
+        mode: 0444
+    deploy:
+      replicas: 1
+      labels:
+      - 'orchestrator=polaris-stackmanager'
+      - 'traefik.docker.network=traefik'
+      - 'traefik.enable=true'
+      - 'traefik.tcp.services.database-alpha-exporter.loadbalancer.server.port=9104'
+      - 'traefik.tcp.routers.database-alpha-exporter.entrypoints=dbExporter'
+      - 'traefik.tcp.routers.database-alpha-exporter.rule=HostSNI(`*`)'
+    environment:
+      - MYSQLD_EXPORTER_PASSWORD={{ databaseAlpha_ExporterPassword }}
+    networks:
+      storage:
+        aliases:
+        - database-alpha-exporter
+      traefik:
+
+configs:
+  exporter:
+    file: exporter-my.cnf
+    name: exporter_config_2024090901
+  primaryTuning:
+    file: primaryTuning.cnf
+    name: mariadb_primary_tuning_config_2024121301
+  replicaTuning:
+    file: replicaTuning.cnf
+    name: mariadb_replica_tuning_config_2024121301
+
+volumes:
+  primary:
+  replica:
+  database-alpha-init:
+    external: true
+
+networks:
+  storage:
+  traefik:
+    external: true

@@ -1,0 +1,36 @@
+services:
+  promtail:
+    image: 'grafana/promtail:latest'
+    command:
+      - "-log-config-reverse-order"
+      - "-config.file=/etc/promtail/config.yaml"
+    volumes:
+      - /run/log/journal/:/run/log/journal/:ro
+      - /etc/machine-id:/etc/machine-id:ro
+      - /var/log/:/var/log:ro
+    deploy:
+      mode: global
+      labels:
+        - "orchestrator=polaris-stackmanager"
+        - "traefik.enable=true"
+        - "traefik.docker.network=traefik"
+        - "traefik.http.routers.promtail-api.rule=Host(`promtail.local`)"
+        - "traefik.http.routers.promtail-api.service=promtail-api"
+        - "traefik.http.routers.promtail-api.entrypoints=websecure"
+        - "traefik.http.routers.promtail-api.tls.domains.main=promtail.local"
+        - "traefik.http.services.promtail-api.loadbalancer.server.port=9080"
+    networks:
+      - traefik
+    configs:
+      - source: config
+        target: /etc/promtail/config.yaml
+        mode: 0440
+
+configs:
+  config:
+    file: config.yaml
+    name: promtail_config_20241213000038
+
+networks:
+  traefik:
+    external: true

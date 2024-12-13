@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+
+  whoami:
+    image: traefik/whoami:latest
+    networks:
+      - traefik
+    deploy:
+      labels:
+        - "orchestrator=polaris-stackmanager"
+        - "traefik.enable=true"
+        - "traefik.http.routers.whoami.rule=Host(`whoami.local`)"
+        - "traefik,http.routers.whoami.service=whoami"
+        - "traefik.http.routers.whoami.entrypoints=websecure"
+        - "traefik.http.routers.whoami.tls.domains.main=whoami.local"
+        - "traefik.http.services.whoami.loadbalancer.server.port=80"
+
+networks:
+  traefik:
+    external: true

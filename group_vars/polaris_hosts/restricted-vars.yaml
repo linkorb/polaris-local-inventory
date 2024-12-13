@@ -1,0 +1,18 @@
+polaris_docker_registry_username: some-username
+polaris_docker_registry_pat: some-token
+polaris_docker_secrets_for_stacks:
+  - name: proxi_jwt_secret_key
+    data: aaa
+  - name: proxi_jwt_secret_key_passphrase
+    data: bbb
+  - name: proxi_provider_client_secret
+    data: ccc
+databaseAlpha_MariadbPrimaryRootPassword: r00t_passw0rd
+databaseAlpha_MariadbReplicationPassword: r3plicati0n_s3cr3t
+databaseAlpha_MariadbReplicaRootPassword: r00t_passw0rd
+databaseAlpha_ExporterPassword: 3xp0rt3r_passw0rd
+databaseAlpha_DbdbPassword: d33b33d00b33d00
+# "user" "password"
+lb_DashboardAndMetricsBasicAuthUsers: user:$$apr1$$Rq.c/siQ$$uN8tavHTlrpaU7dqL9ySR1
+# "user" "password"
+loki_ApiBasicAuthUsers: user:$$apr1$$Rq.c/siQ$$uN8tavHTlrpaU7dqL9ySR1

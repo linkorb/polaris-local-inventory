@@ -1,0 +1,61 @@
+[mariadb]
+
+innodb_buffer_pool_size = 512M
+sort_buffer_size = 2M
+
+; Query Cache
+; Reduce memory usage by limiting the size of cached queries
+query_cache_type = 0
+query_cache_size = 0
+query_cache_limit = 128K
+
+; Adaptive Hash Index
+; The adaptive hash index can enhance performance by caching index
+; lookups in memory. If disabled, the server might experience higher memory
+; usage for other data structures or operations.
+innodb_adaptive_hash_index = 1
+
+; IO Capacity
+; A lower IO capacity means fewer I/O operations per second, which can lead to
+; more data being held in memory due to slower flushing to disk. Increasing this
+; value can help balance the load and reduce memory pressure.
+innodb_io_capacity = 200
+
+; Log File Size
+; Smaller log files can lead to more frequent log flushing, increasing memory
+; usage. Larger log files reduce the frequency of flushes and help in better
+; memory management.
+innodb_log_file_size = 100M
+
+; Log Buffer Size
+; Smaller log buffers may be inadequate for high transaction volumes, leading to
+; more frequent writes and increased memory usage. Increasing the log buffer
+; size can alleviate memory pressure.
+innodb_log_buffer_size = 16M
+
+; Thread Concurrency
+; Fewer IO threads can limit concurrency and increase memory usage due to
+; bottlenecks. More threads can improve performance and distribute memory load
+; more effectively.
+innodb_write_io_threads = 4
+innodb_read_io_threads = 4
+
+; Max Connections
+; Setting max_connections low could result in fewer simultaneous connections but
+; might not manage memory efficiently if connections are high.
+max_connections = 151
+
+; Temporary Table Size
+; Larger temporary table sizes could reduce the number of disk-based temporary
+; tables, enhancing memory efficiency.
+tmp_table_size = 16M
+max_heap_table_size = 16M
+
+; Max "Packet" Size
+; A packet is not just a network data structure, but a holder of all sorts of
+; strings. It should be a big as the biggest BLOB column.
+max_allowed_packet = 32M
+
+slow_query_log = 0
+long_query_time = 10
+log_slow_verbosity = all

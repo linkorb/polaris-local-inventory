@@ -1,0 +1,42 @@
+services:
+  traefik:
+    restart: always
+    image: "traefik:2.11"
+    command:
+    - "--configFile=/etc/traefik/config.yaml"
+    deploy:
+      mode: global
+      labels:
+      - "orchestrator=polaris-stackmanager"
+      - "traefik.enable=true"
+
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.local`)"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.tls.domains.main=traefik.local"
+      - "traefik.http.routers.dashboard.entrypoints=websecure"
+      - "traefik.http.routers.dashboard.middlewares=username-password"
+      - "traefik.http.services.dashboard.loadbalancer.server.port=80"
+
+      - "traefik.http.routers.metrics.rule=Host(`traefik.local`) && PathPrefix(`/metrics`)"
+      - "traefik.http.routers.metrics.service=prometheus@internal"
+      - "traefik.http.routers.metrics.tls.domains.main=traefik.local"
+      - "traefik.http.routers.metrics.entrypoints=websecure"
+      - "traefik.http.routers.metrics.middlewares=username-password"
+
+      - "traefik.http.middlewares.username-password.basicauth.users={{ lb_DashboardAndMetricsBasicAuthUsers }}"
+      placement:
+        constraints: [node.role==manager, node.hostname==swarm-manager]
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/traefik:/etc/traefik
+      - /var/log/traefik:/var/log/traefik
+    ports:
+    - {mode: host, protocol: tcp, published: 80, target: 80}
+    - {mode: host, protocol: tcp, published: 443, target: 443}
+    - {mode: host, protocol: tcp, published: 9104, target: 9104}
+    networks:
+    - traefik
+
+networks:
+  traefik:
+    external: true

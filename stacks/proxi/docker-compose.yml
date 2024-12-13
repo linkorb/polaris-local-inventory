@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  app:
+    image: 'ghcr.io/linkorb/proxi:1.2.0'
+    deploy:
+      labels:
+      - "orchestrator=polaris-stackmanager"
+      - "traefik.enable=true"
+      - "traefik.http.routers.proxi.entrypoints=web"
+      - "traefik.http.routers.proxi.rule=Host(`proxi.local`)"
+      - "traefik.http.routers.proxi.service=proxi"
+      - "traefik.http.services.proxi.loadbalancer.server.port=80"
+    secrets:
+    - source: jwt_secret_key
+      target: '/keys/jwt-issuer/private.pem'
+    - source: jwt_secret_key_passphrase
+      target: '/keys/jwt-issuer/private-passphrase.txt'
+    - source: provider_client_secret
+      target: '/keys/provider-http-client/secret.txt'
+    environment:
+      APP_ENV: 'prod'
+      APP_DEBUG: '0'
+      TRUSTED_PROXIES: '127.0.0.1,10.0.0.0/8'
+      ALLOWED_JWT_ISSUERS: 'https://hub.perinatologie.nl'
+      HUB_JWT_PUBLIC_KEY: '/keys/jwt-authentication/hub-public.pem'
+      HUB_ADDITIONAL_JWT_PUBLIC_KEY: '/keys/jwt-authentication/additional-hub-public.pem'
+      JWT_PUBLIC_KEY: '/keys/jwt-issuer-pubkey/public.pem'
+      JWT_SECRET_KEY: '/keys/jwt-issuer/private.pem'
+      JWT_PASSPHRASE: '/keys/jwt-issuer/private-passphrase.txt'
+      PROVIDER_CLIENT_URL: 'https://spaces.perinatologie.nl'
+      PROVIDER_CLIENT_USERNAME: 'proxi'
+      PROVIDER_CLIENT_SECRET: '/keys/provider-http-client/secret.txt'
+    networks:
+    - traefik
+
+networks:
+  traefik:
+    external: true
+
+secrets:
+  jwt_secret_key:
+    name: proxi_jwt_secret_key
+    external: true
+  jwt_secret_key_passphrase:
+    name: proxi_jwt_secret_key_passphrase
+    external: true
+  provider_client_secret:
+    name: proxi_provider_client_secret
+    external: true
