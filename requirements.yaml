@@ -18,6 +18,5 @@ roles:
 - name: geerlingguy.pip
   # Upgrade to 3.0.2 breaks when install pip
   version: "2.2.0"
-- name: linkorb.shipyard
 - name: ypsman.ipv6_disable
 - name: linux-system-roles.timesync
