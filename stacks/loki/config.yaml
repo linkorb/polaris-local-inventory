@@ -23,6 +23,9 @@ query_range:
         enabled: true
         max_size_mb: 100
 
+limits_config:
+  allow_structured_metadata: false
+
 storage_config:
   tsdb_shipper:
     active_index_directory: /loki/tsdb-index
@@ -35,6 +38,13 @@ schema_config:
       store: tsdb
       object_store: filesystem
       schema: v12
+      index:
+        prefix: index_
+        period: 24h
+    - from: '2025-01-08'
+      store: tsdb
+      object_store: filesystem
+      schema: v13
       index:
         prefix: index_
         period: 24h
