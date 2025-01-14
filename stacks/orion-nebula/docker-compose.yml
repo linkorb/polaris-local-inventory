@@ -1,0 +1,30 @@
+services:
+  app:
+    image: ghcr.io/linkorb/nebula:latest
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - "orchestrator=polaris-stackmanager"
+        - "traefik.enable=true"
+        - "traefik.docker.network=public"
+        - "traefik.http.routers.nebula.rule=Host(`nebula.linkorb.com`)"
+        - "traefik.http.routers.nebula.service=nebula"
+        - "traefik.http.routers.nebula.entrypoints=websecure"
+        - "traefik.http.routers.nebula.tls.domains.main=nebula.linkorb.com"
+        - "traefik.http.services.nebula.loadbalancer.server.port=80"
+    configs:
+      - source: dotenv
+        target: /app/.env.local
+        mode: 0444
+    networks:
+      - traefik
+
+configs:
+  dotenv:
+    file: .env.local
+    name: dotenv_2025011406
+
+networks:
+  traefik:
+    external: true
