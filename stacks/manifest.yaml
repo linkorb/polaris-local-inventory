@@ -29,6 +29,11 @@ stacks:
   host: swarm-manager
   tag: app
 
+- name: nebula
+  path: orion-nebula
+  host: swarm-manager
+  tag: app
+
 # 3rd party apps we host
 - name: whoami
   host: swarm-manager
