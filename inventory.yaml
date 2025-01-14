@@ -1,6 +1,5 @@
 polaris_hosts:
   hosts:
-    monitor:
     swarm-manager:
     worker-1:
     worker-2:
