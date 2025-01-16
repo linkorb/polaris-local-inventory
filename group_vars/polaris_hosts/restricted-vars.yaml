@@ -12,6 +12,8 @@ databaseAlpha_MariadbReplicationPassword: r3plicati0n_s3cr3t
 databaseAlpha_MariadbReplicaRootPassword: r00t_passw0rd
 databaseAlpha_ExporterPassword: 3xp0rt3r_passw0rd
 databaseAlpha_DbdbPassword: d33b33d00b33d00
+insight_grafana_smtpPassword: 5m7p_passw0rd
+insight_grafana_adminPassword: adm1n_passw0rd
 # "user" "password"
 lb_DashboardAndMetricsBasicAuthUsers: user:$$apr1$$Rq.c/siQ$$uN8tavHTlrpaU7dqL9ySR1
 # "user" "password"

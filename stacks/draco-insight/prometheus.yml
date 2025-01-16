@@ -1,0 +1,64 @@
+global:
+  scrape_interval:     59s
+  evaluation_interval: 60s
+  scrape_timeout: 45s
+  external_labels:
+    constellation: local
+    host: '${HOSTNAME}'
+    stack: insight
+
+alerting:
+  alertmanagers:
+    - static_configs:
+      - targets:
+        - alertmanager:9093
+
+rule_files:
+  - "alerts/*.yml"
+
+scrape_configs:
+  # Make Prometheus scrape itself for metrics.
+  - job_name: 'prometheus'
+    static_configs:
+    - targets: ['localhost:9090']
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: go_.+
+        action: drop
+
+  - job_name: blackbox-exporter-metrics
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+        - blackbox-exporter:9115
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: go_.+
+        action: drop
+
+  - job_name: our-public-websites-blackbox-probes
+    scrape_interval: 300s
+    metrics_path: /probe
+    params:
+      module: [https_2xx]
+    static_configs:
+      - targets:
+        - https://engineering.linkorb.com/
+        - https://onatal.nl/
+        - https://www.perinatologie.nl/
+        - https://www.zwangerenportaal.nl/
+    relabel_configs:
+      # set the scrape request's "target" query param to the target address
+      - source_labels: [__address__]
+        target_label: __param_target
+      # return in the scraped metrics a label "instance" containing the target address (obtained from the "target" query param)
+      - source_labels: [__param_target]
+        target_label: instance
+      # set the scrape request's URI host/port to the blackbox-exporter, i.e. ask blackbox-exporter to probe the target
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
+
+  - job_name: 'infra-nodes-metrics'
+    file_sd_configs:
+      - files:
+        - infra.json

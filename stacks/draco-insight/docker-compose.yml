@@ -1,0 +1,158 @@
+services:
+
+  alertmanager:
+    image: prom/alertmanager
+    command:
+      - --config.file=/etc/alertmanager/alertmanager.yml
+      - --log.level=info
+    deploy:
+      labels:
+        - "orchestrator=polaris-stackmanager"
+        - "traefik.docker.network=traefik"
+        - "traefik.enable=true"
+        - "traefik.http.routers.alertmanager.rule=Host(`alertmanager.local`)"
+        - "traefik.http.routers.alertmanager.entrypoints=websecure"
+        - "traefik.http.routers.alertmanager.tls.domains.main=alertmanager.local"
+        - "traefik.http.services.alertmanager.loadbalancer.server.port=9093"
+    configs:
+      - source: alertmanager_config
+        target: /etc/alertmanager/alertmanager.yml
+    networks:
+      - traefik
+
+  blackbox-exporter:
+    image: prom/blackbox-exporter
+    command:
+      - --log.level=info
+      - --config.file=/etc/blackbox-exporter/blackbox.yml
+    deploy:
+      labels:
+        - "orchestrator=polaris-stackmanager"
+        - "traefik.docker.network=traefik"
+        - "traefik.enable=true"
+        - "traefik.http.routers.blackbox.rule=Host(`blackbox-exporter.local`)"
+        - "traefik.http.routers.blackbox.entrypoints=websecure"
+        - "traefik.http.routers.blackbox.tls.domains.main=blackbox-exporter.local"
+        - "traefik.http.services.blackbox.loadbalancer.server.port=9115"
+    configs:
+      - source: blackbox_config
+        target: /etc/blackbox-exporter/blackbox.yml
+    networks:
+      - traefik
+
+  grafana:
+    image: grafana/grafana-oss:11.5.2-ubuntu
+    deploy:
+      labels:
+        - "orchestrator=polaris-stackmanager"
+        - "traefik.docker.network=traefik"
+        - "traefik.enable=true"
+        - "traefik.http.routers.grafana.rule=Host(`grafana.local`)"
+        - "traefik.http.routers.grafana.entrypoints=websecure"
+        - "traefik.http.routers.grafana.tls.domains.main=grafana.local"
+        - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+      placement:
+        constraints: [ node.hostname == worker-1 ]
+    configs:
+      - source: grafana_provisioning_datasources_insight_stack
+        target: /etc/grafana/provisioning/datasources/insight-stack.yaml
+      - source: grafana_provisioning_datasources_logging
+        target: /etc/grafana/provisioning/datasources/logging.yaml
+    environment:
+      - GF_ANALYTICS_CHECK_FOR_UPDATES=false
+      - GF_ANALYTICS_REPORTING_ENABLED=false
+      - GF_LOG_LEVEL=debug
+      - GF_LOG_MODE=console
+      - GF_PLUGINS_PREINSTALL=grafana-github-datasource, grafana-lokiexplore-app
+      - GF_SERVER_ROOT_URL=https://grafana.local
+      - GF_SECURITY_ADMIN_PASSWORD__FILE=/run/secrets/admin-password
+      - GF_USERS_ALLOW_SIGN_UP=false
+    networks:
+      - traefik
+    secrets:
+      - source: grafana_admin_password
+        target: /run/secrets/admin-password
+    volumes:
+      - grafana_storage:/var/lib/grafana
+
+  prometheus:
+    image: prom/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --log.level=info
+      - --storage.tsdb.path=/prometheus
+      - --web.console.libraries=/usr/share/prometheus/console_libraries
+      - --web.console.templates=/usr/share/prometheus/consoles
+      - --web.enable-admin-api
+      - --web.enable-lifecycle
+      - --storage.tsdb.retention.time=50d
+    deploy:
+      labels:
+        - "orchestrator=polaris-stackmanager"
+        - "traefik.docker.network=traefik"
+        - "traefik.enable=true"
+        - "traefik.http.routers.prometheus.rule=Host(`prometheus.local`)"
+        - "traefik.http.routers.prometheus.entrypoints=websecure"
+        - "traefik.http.routers.prometheus.tls.domains.main=prometheus.local"
+        - "traefik.http.services.prometheus.loadbalancer.server.port=9090"
+      placement:
+        constraints:
+          - node.role == manager
+    environment:
+      HOSTNAME: '{{ .Node.Hostname }}'
+    configs:
+      - source: prometheus_config
+        target: /etc/prometheus/prometheus.yml
+      - source: prometheus_targets_nodes
+        target: /etc/prometheus/infra.json
+      - source: prometheus_alerts_local_development_rules
+        target: /etc/prometheus/alerts/local-development-rules.yml
+    networks:
+      - traefik
+    volumes:
+      - 'prometheus_tsdb:/prometheus'
+      - 'prometheus_snapshots:/snapshots'
+
+configs:
+
+  alertmanager_config:
+    file: alertmanager.yml
+    name: insight_alertmanager_config_25011602
+
+  blackbox_config:
+    file: blackbox.yml
+    name: insight_blackbox_config_25011601
+
+  grafana_provisioning_datasources_insight_stack:
+    file: grafana-provisioning/datasources/insight-stack.yaml
+    name: insight_grafana_prov_datasources_insight_stack_25030101
+  grafana_provisioning_datasources_logging:
+    file: grafana-provisioning/datasources/logging.yaml
+    name: insight_grafana_prov_datasources_logging_25030101
+
+  prometheus_config:
+    file: prometheus.yml
+    name: insight_prometheus_config_25040901
+  prometheus_targets_nodes:
+    file: infra.json
+    name: insight_prometheus_targets_nodes_25011601
+  prometheus_alerts_local_development_rules:
+    file: prometheus-alerts/local-development-rules.yml
+    name: insight_prometheus_alerts_local_development_rules_25011501
+
+networks:
+
+  traefik:
+    external: true
+
+secrets:
+
+  grafana_admin_password:
+    file: grafana-admin-password.secret
+    name: grafana_admin_password_25030101
+
+volumes:
+
+  grafana_storage:
+  prometheus_tsdb:
+  prometheus_snapshots:

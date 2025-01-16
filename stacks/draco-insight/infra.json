@@ -1,0 +1,10 @@
+[
+    {
+        "targets": [
+            "lb1a.host.linkorb.cloud:9100"
+        ],
+        "labels": {
+            "instance": "lb1a"
+        }
+    }
+]

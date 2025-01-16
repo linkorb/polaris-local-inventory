@@ -1,0 +1,15 @@
+groups:
+
+- name: local-development-rules
+  interval: 720s
+  rules:
+  - alert: Please ignore this alert. It was raised by a developer's workstation and does not signal a real problem.
+    expr: probe_success{job="our-public-websites-blackbox-probes"} == 0
+    for: 24m
+    labels:
+      severity: info
+      owner: infra
+    annotations:
+      identifier: '{{ $labels.instance }}'
+      summary: "HTTP requests of {{ $labels.instance }} have been failing for 24m"
+      description: "HTTP requests have not had successful responses from web apps used for companywide communications {{ $labels.instance }}"

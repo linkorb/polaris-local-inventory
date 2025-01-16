@@ -1,0 +1,32 @@
+global:
+  opsgenie_api_key: 'not-a-real-api-key-secret'
+  opsgenie_api_url: "https://api.eu.opsgenie.com"
+  resolve_timeout: 5m
+
+route:
+  group_by: ['...']
+  repeat_interval: 5m
+  receiver: opsgenie
+  routes:
+  # this route matches everything and is muted all of the time ...
+  - matchers: []
+    receiver: into-the-void
+    continue: false
+    mute_time_intervals:
+    - all-of-time
+  # ... and this route is never reached
+  - matchers: []
+    receiver: opsgenie
+
+receivers:
+  - name: 'into-the-void'
+  - name: 'opsgenie'
+    opsgenie_configs:
+      - responders:
+        - name: 'OpsOfficeHours'
+          type: 'team'
+
+time_intervals:
+  - name: all-of-time
+    time_intervals:
+      - location: Local

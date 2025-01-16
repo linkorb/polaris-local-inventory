@@ -1,0 +1,12 @@
+apiVersion: 1
+
+datasources:
+
+  # https://grafana.com/docs/grafana/latest/datasources/loki/#provision-the-data-source
+  - name: Loki
+    type: loki
+    access: proxy
+    url: http://loki_loki:3100
+    jsonData:
+      timeout: 60
+      maxLines: 1000
