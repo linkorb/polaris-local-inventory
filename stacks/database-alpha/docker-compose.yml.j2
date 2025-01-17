@@ -10,7 +10,7 @@ services:
       retries: 3
     command: '--log-bin --log-basename=database-alpha-primary'
     environment:
-    - MARIADB_ROOT_PASSWORD={{ databaseAlpha_MariadbPrimaryRootPassword}}
+    - MARIADB_ROOT_PASSWORD={{ databaseAlpha_MariadbPrimaryRootPassword }}
     - MARIADB_REPLICATION_USER=rplctr
     - MARIADB_REPLICATION_PASSWORD={{ databaseAlpha_MariadbReplicationPassword }}
     - MARIADB_AUTO_UPGRADE=1
