@@ -26,16 +26,33 @@ services:
       - "traefik.http.middlewares.username-password.basicauth.users={{ lb_DashboardAndMetricsBasicAuthUsers }}"
       placement:
         constraints: [node.role==manager, node.hostname==swarm-manager]
+    configs:
+      - source: config
+        target: /etc/traefik/config.yaml
+        mode: 0444
+      - source: dynamic_config
+        target: /etc/traefik/dynamic-config.yaml
+        mode: 0444
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /etc/traefik:/etc/traefik
-      - /var/log/traefik:/var/log/traefik
+      - /etc/traefik/certificates:/etc/traefik/certificates
     ports:
+    # Traefik entrypoint: web
     - {mode: host, protocol: tcp, published: 80, target: 80}
+    # Traefik entrypoint: websecure
     - {mode: host, protocol: tcp, published: 443, target: 443}
+    # Traefik entrypoint: dbExporter
     - {mode: host, protocol: tcp, published: 9104, target: 9104}
     networks:
     - traefik
+
+configs:
+  config:
+    file: config.yaml
+    name: config_2025011702
+  dynamic_config:
+    file: dynamic-config.yaml
+    name: dynamic_config_2025011701
 
 networks:
   traefik:

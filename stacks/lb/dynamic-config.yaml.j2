@@ -1,0 +1,8 @@
+{% if polaris_traefik_tls_files | default([]) | length %}
+tls:
+  certificates:
+{% for values in polaris_traefik_tls_files %}
+    - certFile: /etc/traefik/certificates/{{ values.domain | basename }}.cert
+      keyFile: /etc/traefik/certificates/{{ values.domain | basename }}.key
+{% endfor %}
+{% endif %}

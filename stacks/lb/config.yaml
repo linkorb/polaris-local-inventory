@@ -1,0 +1,46 @@
+entryPoints:
+  websecure:
+    address: ":443"
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+  dbExporter:
+    address: ":9104"
+
+accessLog:
+  bufferingSize: 32
+
+providers:
+  docker:
+    # XXX worth securing in the future following this guide
+    # https://medium.com/@containeroo/traefik-2-0-paranoid-about-mounting-var-run-docker-sock-22da9cb3e78c
+    endpoint: "unix:///var/run/docker.sock"
+    swarmMode: true
+
+    # require each container to have the "traefik.enabled=true" label
+    exposedbydefault: false
+
+  file:
+    filename: /etc/traefik/dynamic-config.yaml
+    watch: true
+
+api:
+  dashboard: true
+
+metrics:
+  prometheus:
+    manualRouting: true
+    addEntryPointsLabels: true
+    addRoutersLabels: true
+    buckets:
+      - 0.1
+      - 0.3
+      - 1.2
+      - 5.0
+
+log:
+  level: INFO

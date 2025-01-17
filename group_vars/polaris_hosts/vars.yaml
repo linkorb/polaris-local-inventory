@@ -14,17 +14,3 @@ polaris_docker_users:
   - bob
 
 polaris_tailscale_args: --login-server http://swarm-manager:18080
-
-polaris_traefik_log_level: ERROR
-polaris_traefik_entrypoints:
-    websecure:
-      address: ":443"
-    web:
-      address: ":80"
-      http:
-        redirections:
-          entryPoint:
-            to: websecure
-            scheme: https
-    dbExporter:
-      address: ":9104"
