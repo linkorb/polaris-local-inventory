@@ -3,6 +3,8 @@ polaris_hosts:
     swarm-manager:
     worker-1:
     worker-2:
+      node_labels:
+        com.linkorb.dev.a-labelled-node: 'true'
     worker-3:
 
 polaris_traefik_ingress_host:

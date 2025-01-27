@@ -6,8 +6,8 @@ services:
     deploy:
       mode: global
       placement:
-        constraints: []
-
+        constraints:
+          - node.labels.com.linkorb.dev.a-labelled-node == true
       labels:
         - "orchestrator=polaris-stackmanager"
         - "traefik.enable=true"
