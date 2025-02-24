@@ -25,8 +25,7 @@ providers:
     exposedbydefault: false
 
   file:
-    filename: /etc/traefik/dynamic-config.yaml
-    watch: true
+    directory: /etc/traefik/dynamic
 
 api:
   dashboard: true

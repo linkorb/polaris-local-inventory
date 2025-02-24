@@ -31,7 +31,7 @@ services:
         target: /etc/traefik/config.yaml
         mode: 0444
       - source: dynamic_config
-        target: /etc/traefik/dynamic-config.yaml
+        target: /etc/traefik/dynamic/dynamic-config.yaml
         mode: 0444
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -49,7 +49,7 @@ services:
 configs:
   config:
     file: config.yaml
-    name: config_2025011702
+    name: config_2025021301
   dynamic_config:
     file: dynamic-config.yaml
     name: dynamic_config_2025011701
