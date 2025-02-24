@@ -6,3 +6,10 @@ tls:
       keyFile: /etc/traefik/certificates/{{ values.domain | basename }}.key
 {% endfor %}
 {% endif %}
+
+http:
+  middlewares:
+    permitted-clients:
+      ipAllowList:
+        sourceRange:
+          - "10.58.181.1"
