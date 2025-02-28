@@ -4,10 +4,13 @@ services:
     command:
       - "-log-config-reverse-order"
       - "-config.file=/etc/promtail/config.yaml"
+      - "-config.expand-env=true"
     volumes:
       - /run/log/journal/:/run/log/journal/:ro
       - /etc/machine-id:/etc/machine-id:ro
       - /var/log/:/var/log:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - positions:/tmp/positions
     deploy:
       mode: global
       labels:
@@ -19,6 +22,8 @@ services:
         - "traefik.http.routers.promtail-api.entrypoints=websecure"
         - "traefik.http.routers.promtail-api.tls.domains.main=promtail.local"
         - "traefik.http.services.promtail-api.loadbalancer.server.port=9080"
+    environment:
+      HOSTNAME: "{{ .Node.Hostname }}"
     networks:
       - traefik
     configs:
@@ -29,8 +34,11 @@ services:
 configs:
   config:
     file: config.yaml
-    name: promtail_config_20241213000038
+    name: promtail_config_2025022501
 
 networks:
   traefik:
     external: true
+
+volumes:
+  positions:
