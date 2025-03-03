@@ -1,6 +1,31 @@
 polaris_hosts:
   hosts:
     swarm-manager:
+      stacks:
+        - name: database-alpha
+          path: database-alpha
+          host: swarm-manager
+          tag: app
+        - name: lb
+          path: lb
+          host: swarm-manager
+          tag: lb
+        - name: loki
+          path: loki
+          host: swarm-manager
+          tag: logging
+        - name: promtail
+          path: promtail
+          host: swarm-manager
+          tag: logging
+        - name: proxi
+          path: proxi
+          host: swarm-manager
+          tag: app
+        - name: whoami
+          path: whoami
+          host: swarm-manager
+          tag: app
     worker-1:
     worker-2:
       node_labels:
