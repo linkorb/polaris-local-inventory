@@ -1,6 +1,5 @@
 services:
   traefik:
-    restart: always
     image: "traefik:2.11"
     command:
     - "--configFile=/etc/traefik/config.yaml"
@@ -37,6 +36,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /etc/traefik/certificates:/etc/traefik/certificates
     ports:
+    # https://docs.docker.com/engine/swarm/ingress/#bypass-the-routing-mesh
     # Traefik entrypoint: web
     - {mode: host, protocol: tcp, published: 80, target: 80}
     # Traefik entrypoint: websecure
