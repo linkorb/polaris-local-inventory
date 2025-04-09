@@ -5,7 +5,6 @@
   become: true
   ansible.builtin.lineinfile:
     dest: /etc/hosts
-    regexp: '.*{{ item }}$'
     line: '{{ hostvars[item].ansible_host }} {{item}}'
     state: present
   when: hostvars[item].ansible_host is defined
