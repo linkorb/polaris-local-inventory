@@ -80,7 +80,7 @@ services:
         - database-alpha-replica
       traefik:
 
-  exporter:
+  primary-exporter:
     image: prom/mysqld-exporter
     command: --mysqld.address primary:3306
     configs:
@@ -91,18 +91,50 @@ services:
       replicas: 1
       labels:
       - 'orchestrator=polaris-stackmanager'
-      - 'traefik.docker.network=traefik'
-      - 'traefik.enable=true'
-      - 'traefik.tcp.services.database-alpha-exporter.loadbalancer.server.port=9104'
-      - 'traefik.tcp.routers.database-alpha-exporter.entrypoints=dbExporter'
-      - 'traefik.tcp.routers.database-alpha-exporter.rule=HostSNI(`*`)'
     environment:
       - MYSQLD_EXPORTER_PASSWORD={{ databaseAlpha_ExporterPassword }}
     networks:
-      storage:
-        aliases:
-        - database-alpha-exporter
-      traefik:
+      - storage
+      - traefik
+
+  replica-exporter:
+    image: prom/mysqld-exporter
+    command: --mysqld.address replica:3306
+    configs:
+      - source: exporter
+        target: .my.cnf
+        mode: 0444
+    deploy:
+      replicas: 1
+      labels:
+      - 'orchestrator=polaris-stackmanager'
+    environment:
+      - MYSQLD_EXPORTER_PASSWORD={{ databaseAlpha_ExporterPassword }}
+    networks:
+      - storage
+      - traefik
+
+  prometheus:
+    image: prom/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --log.level=debug
+      - --storage.tsdb.path=/prometheus
+      - --enable-feature=expand-external-labels
+    deploy:
+      labels:
+        - 'orchestrator=polaris-stackmanager'
+    environment:
+      HOSTNAME: '{{ "{{ .Node.Hostname }}" }}'
+    configs:
+      - source: prometheus_config
+        target: /etc/prometheus/prometheus.yml
+    networks:
+      - storage
+      - traefik
+    volumes:
+      - 'prometheus_tsdb:/prometheus'
+      - 'prometheus_snapshots:/snapshots'
 
 configs:
   exporter:
@@ -114,12 +146,17 @@ configs:
   replicaTuning:
     file: replicaTuning.cnf
     name: mariadb_replica_tuning_config_2024121301
+  prometheus_config:
+    file: prometheus.yml
+    name: database-alpha_prometheus_config_2025040901
 
 volumes:
   primary:
   replica:
   database-alpha-init:
     external: true
+  prometheus_tsdb:
+  prometheus_snapshots:
 
 networks:
   storage:

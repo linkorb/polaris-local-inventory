@@ -1,0 +1,46 @@
+global:
+  scrape_interval:     59s
+  evaluation_interval: 60s
+  scrape_timeout: 45s
+  external_labels:
+    constellation: local
+    host: '${HOSTNAME}'
+    stack: database-alpha
+
+remote_write:
+  - url: http://insight_prometheus:9090/api/v1/write
+    write_relabel_configs:
+      - source_labels: [service, constellation]
+        target_label: instance
+        regex: '([^;]*);(.*)'
+        replacement: '${1}.${2}'
+
+alerting:
+  alertmanagers:
+
+rule_files:
+
+scrape_configs:
+  # Make Prometheus scrape itself for metrics.
+  - job_name: prometheus
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          service: database-alpha-prometheus
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: go_.+
+        action: drop
+
+  - job_name: mariadb
+    static_configs:
+      - targets: ['primary-exporter:9104']
+        labels:
+          service: database-alpha-primary
+      - targets: ['replica-exporter:9104']
+        labels:
+          service: database-alpha-replica
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: go_.+
+        action: drop
