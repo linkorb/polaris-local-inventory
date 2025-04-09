@@ -6,7 +6,7 @@ positions:
   filename: /tmp/positions/positions.yaml
 
 clients:
-  - url: 'http://loki:3100/loki/api/v1/push'
+  - url: 'http://loki_loki:3100/loki/api/v1/push'
     external_labels:
       host:  "${HOSTNAME}"
       constellation: local
