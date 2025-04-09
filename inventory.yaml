@@ -5,6 +5,10 @@ polaris_hosts:
         - name: database-alpha
           path: database-alpha
           host: swarm-manager
+          config_volumes:
+            - name: database-alpha-init
+              path: docker-entrypoint-initdb.d
+              target: /docker-entrypoint-initdb.d
           tag: app
         - name: lb
           path: lb
