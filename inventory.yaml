@@ -34,6 +34,10 @@ polaris_hosts:
           path: draco-insight
           host: swarm-manager
           tag: app
+        - name: monitor
+          path: monitor
+          host: swarm-manager
+          tag: app
     worker-1:
     worker-2:
       node_labels:

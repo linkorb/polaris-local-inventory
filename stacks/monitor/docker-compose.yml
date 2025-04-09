@@ -1,0 +1,38 @@
+services:
+
+  prometheus:
+    image: prom/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --log.level=debug
+      - --storage.tsdb.path=/prometheus
+      - --enable-feature=expand-external-labels
+    deploy:
+      mode: global
+      labels:
+        - orchestrator=polaris-stackmanager
+    environment:
+      HOSTNAME: '{{ .Node.Hostname }}'
+    configs:
+      - source: prometheus_config
+        target: /etc/prometheus/prometheus.yml
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    networks:
+      - traefik
+    volumes:
+      - 'prometheus_tsdb:/prometheus'
+      - 'prometheus_snapshots:/snapshots'
+
+configs:
+  prometheus_config:
+    file: prometheus.yml
+    name: monitor_prometheus_config_2025040901
+
+networks:
+  traefik:
+    external: true
+
+volumes:
+  prometheus_tsdb:
+  prometheus_snapshots:
