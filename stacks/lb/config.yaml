@@ -10,6 +10,8 @@ entryPoints:
           scheme: https
   dbExporter:
     address: ":9104"
+  metrics:
+    address: ":8082"
 
 accessLog:
   bufferingSize: 32
@@ -32,7 +34,7 @@ api:
 
 metrics:
   prometheus:
-    manualRouting: true
+    entryPoint: metrics
     addEntryPointsLabels: true
     addRoutersLabels: true
     buckets:
