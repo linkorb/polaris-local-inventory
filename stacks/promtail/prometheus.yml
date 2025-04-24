@@ -1,0 +1,43 @@
+global:
+  scrape_interval:     59s
+  evaluation_interval: 60s
+  scrape_timeout: 45s
+  external_labels:
+    constellation: local
+    host: '${HOSTNAME}'
+    stack: promtail
+
+remote_write:
+  - url: http://insight_prometheus:9090/api/v1/write
+    write_relabel_configs:
+      - source_labels: [service, host]
+        target_label: instance
+        regex: '([^;]*);(.*)'
+        replacement: '${1}.${2}'
+
+alerting:
+  alertmanagers:
+
+rule_files:
+
+scrape_configs:
+  # Make Prometheus scrape itself for metrics.
+  - job_name: prometheus
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          service: promtail-prometheus
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: go_.+
+        action: drop
+
+  - job_name: promtail
+    static_configs:
+      - targets: ['promtail:9080']
+        labels:
+          service: promtail
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: go_.+
+        action: drop

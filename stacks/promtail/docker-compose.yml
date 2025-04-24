@@ -31,10 +31,35 @@ services:
         target: /etc/promtail/config.yaml
         mode: 0440
 
+  prometheus:
+    image: prom/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --log.level=debug
+      - --storage.tsdb.path=/prometheus
+      - --enable-feature=expand-external-labels
+    deploy:
+      mode: global
+      labels:
+        - 'orchestrator=polaris-stackmanager'
+    environment:
+      HOSTNAME: '{{ .Node.Hostname }}'
+    configs:
+      - source: prometheus
+        target: /etc/prometheus/prometheus.yml
+    volumes:
+      - 'prometheus_tsdb:/prometheus'
+      - 'prometheus_snapshots:/snapshots'
+    networks:
+      - traefik
+
 configs:
   config:
     file: config.yaml
-    name: promtail_config_2025022501
+    name: promtail_config_25022501
+  prometheus:
+    file: prometheus.yml
+    name: promtail_prometheus_25042401
 
 networks:
   traefik:
@@ -42,3 +67,5 @@ networks:
 
 volumes:
   positions:
+  prometheus_tsdb:
+  prometheus_snapshots:
