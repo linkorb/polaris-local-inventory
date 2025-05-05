@@ -5,7 +5,7 @@ services:
     command:
       - --config.file=/etc/prometheus/prometheus.yml
       - --log.level=debug
-      - --storage.tsdb.path=/prometheus
+      - --agent
       - --enable-feature=expand-external-labels
     deploy:
       mode: global
@@ -21,8 +21,7 @@ services:
     networks:
       - traefik
     volumes:
-      - 'prometheus_tsdb:/prometheus'
-      - 'prometheus_snapshots:/snapshots'
+      - 'prometheus_wal:/prometheus'
 
 configs:
   prometheus_config:
@@ -34,5 +33,4 @@ networks:
     external: true
 
 volumes:
-  prometheus_tsdb:
-  prometheus_snapshots:
+  prometheus_wal:
