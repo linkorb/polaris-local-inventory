@@ -41,7 +41,7 @@ services:
       - traefik
 
   grafana:
-    image: grafana/grafana-oss:11.5.2-ubuntu
+    image: grafana/grafana-oss
     deploy:
       labels:
         - "orchestrator=polaris-stackmanager"
