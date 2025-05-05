@@ -18,7 +18,7 @@ datasources:
     isDefault: true
     access: proxy
     # Access mode - proxy (server in the UI) or direct (browser in the UI).
-    url: http://prometheus:9090
+    url: http://insight_prometheus:9090
     jsonData:
       httpMethod: POST
       manageAlerts: true
