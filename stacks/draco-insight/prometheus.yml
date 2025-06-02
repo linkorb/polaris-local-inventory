@@ -62,3 +62,5 @@ scrape_configs:
     file_sd_configs:
       - files:
         - infra.json
+#   http_sd_configs:
+#     - url: 'https://omnia.linkorb.com/infra/prometheus-targets'
