@@ -11,9 +11,12 @@ remote_write:
   - url: http://insight_prometheus:9090/api/v1/write
     write_relabel_configs:
       - source_labels: [service, host]
+        separator: "."
         target_label: instance
-        regex: '([^;]*);(.*)'
-        replacement: '${1}.${2}'
+      - source_labels: [instance]
+        regex: "\\.?(.+)"
+        replacement: "$1"
+        target_label: instance
 
 alerting:
   alertmanagers:
@@ -38,11 +41,9 @@ scrape_configs:
         labels:
           service: docker-engine
 
-  - job_name: node-exporter
+  - job_name: nodes
     static_configs:
       - targets: ['host.docker.internal:9100']
-        labels:
-          service: node-exporter
     metric_relabel_configs:
       - source_labels: [__name__]
         regex: go_.+
