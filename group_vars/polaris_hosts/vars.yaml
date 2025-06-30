@@ -19,3 +19,5 @@ polaris_tailscale_args: --login-server http://swarm-manager:18080
 
 polaris_docker_swarm_node_labels_to_remove:
   - com.linkorb.dev.example-label
+
+nebulous_AppSecret: imalittlesecretshortandstout

@@ -1,0 +1,49 @@
+services:
+  app:
+    image: ghcr.io/linkorb/nebula:3.25.3
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - 'orchestrator=polaris-stackmanager'
+        - 'traefik.enable=true'
+        - 'traefik.docker.network=traefik'
+        - 'traefik.http.routers.nebulous.rule=HostRegexp(`nebulous-{tenant:.+}.local`)'
+        - 'traefik.http.routers.nebulous.service=nebulous'
+        - 'traefik.http.routers.nebulous.entrypoints=websecure'
+        - 'traefik.http.routers.nebulous.tls=true'
+        - 'traefik.http.services.nebulous.loadbalancer.server.port=80'
+    configs:
+      - source: env-red
+        target: /app/envs/nebulous-red.local-env
+        mode: 0444
+      - source: env-green
+        target: /app/envs/nebulous-green.local-env
+        mode: 0444
+      - source: env-blue
+        target: /app/envs/nebulous-blue.local-env
+        mode: 0444
+    networks:
+      - traefik
+    volumes:
+      - 'cache:/app/var/cache'
+      - 'logs:/app/var/logs' # temporarily, because impersonation logs are written to file
+
+configs:
+  env-red:
+    file: .env.red
+    name: nebulous-env-red_25070201
+  env-green:
+    file: .env.green
+    name: nebulous-env-green_25070201
+  env-blue:
+    file: .env.blue
+    name: nebulous-env-blue_25070201
+
+networks:
+  traefik:
+    external: true
+
+volumes:
+  cache:
+  logs:
