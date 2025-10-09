@@ -17,9 +17,6 @@ services:
     - LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.2
     volumes:
       - 'primary:/var/lib/mysql'
-      - type: volume
-        source: 'database-alpha-init'
-        target: '/docker-entrypoint-initdb.d'
     deploy:
       replicas: 1
       labels:
@@ -152,8 +149,6 @@ configs:
 volumes:
   primary:
   replica:
-  database-alpha-init:
-    external: true
   prometheus_wal:
 
 networks:

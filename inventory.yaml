@@ -1,14 +1,26 @@
 polaris_hosts:
   hosts:
     swarm-manager:
+      # database_admin can create databases and database_users
+      database_admin:
+        user: root
+        port: 33301
+        password: '{{ databaseAlpha_MariadbPrimaryRootPassword }}'
+      databases:
+        - name: mydb
+      database_users:
+        - name: dbdb
+          password: '{{ databaseAlpha_DbdbPassword }}'
+          privileges: '*.*:ALL,GRANT'
+        - name: exporter
+          password: '{{ databaseAlpha_ExporterPassword }}'
+          privileges: '*.*:PROCESS,REPLICATION CLIENT,SLAVE MONITOR,SELECT'
+          resource_limits:
+            MAX_USER_CONNECTIONS: 3
       stacks:
         - name: database-alpha
           path: database-alpha
           host: swarm-manager
-          config_volumes:
-            - name: database-alpha-init
-              path: docker-entrypoint-initdb.d
-              target: /docker-entrypoint-initdb.d
           tag: app
         - name: lb
           path: lb
